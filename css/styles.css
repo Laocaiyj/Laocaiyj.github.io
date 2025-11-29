@@ -34,6 +34,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .logo {
@@ -49,6 +50,11 @@ body {
 .logo-img {
     width: 28px;
     height: 28px;
+}
+
+.nav-links {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .nav-links a {
@@ -150,4 +156,56 @@ body {
     padding: 3em 0;
     color: rgb(var(--gray));
     font-size: 0.9rem;
+}
+
+/* 响应式适配手机端 */
+@media (max-width: 768px) {
+    .hero {
+        padding: 1.5em;
+    }
+
+    .hero-title {
+        font-size: 1.8rem;
+    }
+
+    .lead {
+        font-size: 1rem;
+    }
+
+    .content-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5em;
+    }
+
+    .nav-links {
+        margin-top: 0.5em;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .nav-links a {
+        margin: 0.3em 0.6em;
+    }
+
+    .carousel img {
+        height: 220px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 1.5rem;
+    }
+
+    .lead {
+        font-size: 0.95rem;
+    }
+
+    .carousel img {
+        height: 180px;
+    }
+
+    .info-block {
+        padding: 1.2em;
+    }
 }
