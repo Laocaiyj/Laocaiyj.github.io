@@ -1,0 +1,190 @@
+<!DOCTYPE html><meta charset="utf-8"><style>
+:root {
+	--paper: #f2efe6;
+	--ink: #2a2a2a;
+	--faded: #5b6b5b;
+	--border: #8a8a8a;
+}
+
+/* ===== 基础 ===== */
+
+body {
+	background: var(--paper);
+	color: var(--ink);
+	font-family: "Courier New", "Noto Serif SC", serif;
+}
+
+/* ===== CRT 扫描线 ===== */
+
+body::before {
+	content: "";
+	position: fixed;
+	inset: 0;
+	pointer-events: none;
+	z-index: 9999;
+	background:
+		repeating-linear-gradient(
+			to bottom,
+			rgba(0,0,0,0.03),
+			rgba(0,0,0,0.03) 1px,
+			transparent 1px,
+			transparent 3px
+		);
+	mix-blend-mode: multiply;
+	opacity: 0.35;
+}
+
+/* ===== 文件头 ===== */
+
+.doc-header {
+	max-width: 46rem;
+	margin: 3rem auto 2rem;
+	font-size: 0.75rem;
+	display: flex;
+	justify-content: space-between;
+	letter-spacing: 0.15em;
+	color: var(--faded);
+}
+
+.doc-header span {
+	white-space: nowrap;
+}
+
+/* ===== 主体 ===== */
+
+.doc {
+	max-width: 46rem;
+	margin: 0 auto 4rem;
+	padding: 2rem 2.2rem;
+	border: 1px solid var(--border);
+	background: rgba(255,255,255,0.6);
+	box-shadow: 3px 3px 0 rgba(0,0,0,0.15);
+}
+
+/* ===== 标题 ===== */
+
+.doc h2 {
+	font-size: 1.05rem;
+	letter-spacing: 0.18em;
+	margin: 2.6rem 0 1.2rem;
+	color: var(--ink);
+}
+
+.doc h2::before {
+	content: "■ ";
+	color: var(--faded);
+}
+
+/* ===== 列表 ===== */
+
+.doc ul {
+	padding-left: 1.2rem;
+	margin: 1rem 0 1.6rem;
+}
+
+.doc li {
+	margin-bottom: 0.5rem;
+	line-height: 1.8;
+}
+
+/* ===== 代码块 ===== */
+
+pre {
+	background: #f7f6f1;
+	border: 1px dashed var(--border);
+	padding: 1rem 1.2rem;
+	overflow-x: auto;
+	font-size: 0.8rem;
+}
+
+/* ===== 图片 ===== */
+
+.figure {
+	margin: 2.4rem 0;
+	text-align: center;
+}
+
+.figure img {
+	max-width: 100%;
+	border: 1px solid var(--border);
+	background: #fff;
+	padding: 0.4rem;
+}
+
+.figure figcaption {
+	margin-top: 0.6rem;
+	font-size: 0.75rem;
+	color: var(--faded);
+	letter-spacing: 0.12em;
+}
+
+/* ===== 注记 ===== */
+
+.note {
+	margin-top: 3rem;
+	font-size: 0.75rem;
+	color: var(--faded);
+	border-top: 1px dashed var(--border);
+	padding-top: 1rem;
+}
+
+/* ===== 移动端 ===== */
+
+@media (max-width: 640px) {
+	.doc,
+	.doc-header {
+		margin-left: 1rem;
+		margin-right: 1rem;
+	}
+}
+</style>
+<div class="doc-header">
+	<span>FILE: LINUX_USB.MD</span>
+	<span>DOC ID: 01</span>
+	<span>LAST UPDATE: 12-20-2025</span>
+</div>
+<article class="doc">
+<p>
+   在动手之前，需要先准备好一台目前还能正常使用的 Windows 主机；一块移动硬盘——实在找不到的话用 U 盘也行，但容量最好 64GB 起步，不然会显得呃...有些寒酸；一份 Linux 系统的 ISO 镜像文件，可以是 Ubuntu、Fedora 或 Debian，挑一个你看着顺眼的版本即可；还要提前装好 VirtualBox 以及对应的 Extension Pack，这两样都得有；最后，确保你的电脑支持 UEFI 启动，这个基本上 2020 年之后出厂的机器都能满足。
+</p>
+<figure class="figure">
+	<img src="https://i.giphy.com/ma83DYDapmIRq.webp" alt="移动硬盘结构示意">
+	<figcaption>把外置硬盘当成一整块独立系统盘来用，大概就是这个意思</figcaption>
+</figure>
+<p>
+   在 Windows 里打开 磁盘管理，先深呼吸一下，别急。找到那块移动硬盘之后，逐个右键把上面的分区全部删干净。接着把分区表转换成 GPT，然后什么都别再做了，让它就那样乖乖地躺在“未分配”状态里——这一步很重要，手别贱，多点一下就容易把事情搞砸，真的会让人想骂一句该死。
+</p>
+<p>
+   新建一个虚拟机，类型选 Linux——是的，这听起来就是废话。内存从 4GB 起步，硬盘这一步先别加。PS：VirtualBox 记得用管理员模式启动，不然到后面映射物理硬盘的时候会报错，然后你就得关进程、重开一遍，超蠢的，也很浪费时间。
+</p>
+<figure class="figure">
+	<img src="https://img.iminbk.com/i/2025/12/20/6946c4ceb3d0b.png" alt="VirtualBox 新建虚拟机">
+	<figcaption>一个什么都没有的虚拟机</figcaption>
+</figure>
+<h2>映射整块移动硬盘</h2>
+<p>以管理员身份打开命令行，然后执行：</p>
+<pre>cd "C:\Program Files\Oracle\VirtualBox\"
+VBoxManage internalcommands createrawvmdk ^
+ -filename C:\usb.vmdk ^
+ -rawdisk \\.\PhysicalDrive2
+</pre>
+<p>
+这里的 <code>PhysicalDrive2</code> 务必确认清楚是移动硬盘的盘号  
+选错盘<strong>原地起飞</strong>
+</p>
+<p>
+   安装 Linux 的时候啊，眼睛瞪大点，目标磁盘必须选 /dev/sdb—— 也就是你那块被寄予厚望的移动硬盘，千万别手滑点到 /dev/sda，不然回头哭都找不着调。然后到了 EFI 分区这步，512MB 妥妥够用，格式乖乖选 FAT32，挂载到 /boot/efi。根分区 ext4，别去碰文件系统实验。<br>
+ps: 不会分区去网上搜
+</p>
+<figure class="figure">
+	<img src="https://img.iminbk.com/i/2025/12/20/6946c65e74566.webp" alt="Linux 分区界面">
+	<figcaption>分区和引导位置，记得核对好</figcaption>
+</figure>
+<p>
+   装完之后设置好系统，拔掉硬盘，也就拥有一块移动Linux了
+</p>
+<div class="note">
+※ 本方法<strong>直接操作物理磁盘</strong>，需再三确认盘号<br>
+※ 适合需要“随身 Linux 环境”的人，比如你我这种折腾命
+</div>
+</article>
